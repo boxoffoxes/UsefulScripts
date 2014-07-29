@@ -1,0 +1,35 @@
+#!/bin/bash
+
+declare -a ordering
+declare -A cmds
+
+dmopts="$@"
+
+function item () {
+	cmdType=`type -t $2`
+	ordering+=("$1")
+	if [ "$cmdType" = "function" ]; then
+		cmds[$1]="$2"
+	else
+		cmds[$1]="exec $2"
+	fi
+}
+
+source ~/.dmenu_quicklist
+
+function output_list () {
+	for v in "${ordering[@]}" ; do
+		echo $v
+	done
+}
+
+function run_cmd_for_selection () {
+	c="$1"
+	shift
+	${cmds[$c]} "$@"
+}
+
+selected=`output_list | dmenu "$@"`
+#echo "   $selected"
+run_cmd_for_selection $selected
+
