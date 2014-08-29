@@ -5,7 +5,7 @@ declare -A cmds
 
 dmopts="$@"
 
-function item () {
+item () {
 	cmdType=`type -t $2`
 	ordering+=("$1")
 	if [ "$cmdType" = "function" ]; then
@@ -15,15 +15,15 @@ function item () {
 	fi
 }
 
-source ~/.dmenu_quicklist
+. "$HOME/.dmenu_quicklist"
 
-function output_list () {
+output_list () {
 	for v in "${ordering[@]}" ; do
 		echo $v
 	done
 }
 
-function run_cmd_for_selection () {
+run_cmd_for_selection () {
 	c="$1"
 	shift
 	${cmds[$c]} "$@"

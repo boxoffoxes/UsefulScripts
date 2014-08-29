@@ -1,0 +1,37 @@
+# Example dmenu_quicklist config file. Copy to ~/.dmenu_quicklist and edit
+
+# Some simple items
+
+item term "$TERMCMD"
+item editor gvim
+item web "$BROWSER"
+
+
+# Using a shell function to do something more complicated
+# You should exec the last command to avoid leaving unneeded
+# shell processes lying around.
+
+function my_shutdown () {
+	exec $TERMCMD -e "sudo poweroff"
+}
+
+# The variable $dmopts is made available by dmenu_quicklist
+# and contains the commandline arguments passed to dmenu itself
+exit_dwm_with_warning () {
+	[[ `echo -e "Cancel\nOK" | dmenu $dmopts -sb "#a00" -p "This will end your X session"` = "OK" ]] && killall -HUP dwm
+}
+
+item exit exit_dwm_with_warning
+item shutdown my_shutdown
+
+# CD into a directory, open two terminals, restore a vim session file
+# and open some documentation in a surf window
+
+function project () {
+	cd "$1" 
+	$TERMCMD &
+	$TERMCMD &
+	[ -d doc ] && surf file://`pwd`/doc/index.html
+	exec gvim -S
+}
+
